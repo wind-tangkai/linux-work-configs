@@ -1,0 +1,12 @@
+#this is a template file
+escape ``
+vbell off
+altscreen on
+
+# the following two lines give a two-line status, with the current window highlighted
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]' 
+
+# 256 colors
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+#termcapinfo xterm 'test'
