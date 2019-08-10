@@ -1,4 +1,6 @@
 ;;(setq inhibit-startup-message t)
+(setq confirm-kill-emacs 'y-or-n-p)
+
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0) 
@@ -20,7 +22,8 @@
   (require 'package)
   (add-to-list
    'package-archives
-   '("melpa" . "http://melpa.org/packages/")
+   ;; '("melpa" . "http://stable.melpa.org/packages/") ; many packages won't show if using stable
+   '("melpa" . "http://melpa.milkbox.net/packages/")
    t)
 (package-initialize))
 ;;(package-refresh-contents)
@@ -106,12 +109,10 @@
   "Save buffers and start compile"
   (interactive)
   (save-some-buffers t)
-  (switch-to-buffer-other-window "*compilation*")
   (compile compile-command))
 (global-set-key [C-f5] 'compile)
 (global-set-key [f5] 'my-compile)
 (global-set-key [f7] 'revert-buffer)
-
 
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
@@ -142,7 +143,6 @@
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
-(global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -178,4 +178,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (auto-complete-c-headers ctags-update company ace-jump-mode all-the-icons epl ivy counsel-etags all-the-icons-ivy counsel magit json-mode yaml-mode markdown-mode markdown-mode+ jinja2-mode auto-complete go-autocomplete))))
+    (tldr auto-complete-c-headers ctags-update company ace-jump-mode all-the-icons epl ivy counsel-etags all-the-icons-ivy counsel magit json-mode yaml-mode markdown-mode markdown-mode+ jinja2-mode auto-complete go-autocomplete))))
