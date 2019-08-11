@@ -1,4 +1,3 @@
-;;(setq inhibit-startup-message t)
 (setq confirm-kill-emacs 'y-or-n-p)
 
 (tool-bar-mode 0)
@@ -18,6 +17,8 @@
 
 (global-set-key [C-f9] 'dired)
 
+(setq package-list '(ace-jump-mode all-the-icons all-the-icons-ivy auto-complete counsel counsel-etags ctags-update epl ivy jinja2-mode json-mode magit tldr markdown-mode protobuf-mode go-mode go-rename golint company-go go-eldoc))
+
 (when (>= emacs-major-version 24)
   (require 'package)
   (add-to-list
@@ -26,16 +27,29 @@
    '("melpa" . "http://melpa.milkbox.net/packages/")
    t)
 (package-initialize))
-;;(package-refresh-contents)
 
-;;protobuf
-(require 'protobuf-mode)
-(add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
-;;protobuf
-(require 'jinja2-mode)
-(add-to-list 'auto-mode-alist '("\\.jj2" . protobuf-mode))
+;;fetch the list of packages available 
+(unless package-archive-contents
+    (package-refresh-contents))
 
-;; locale coding 
+;;install the missing packages
+(dolist (package package-list)
+    (unless (package-installed-p package)
+          (package-install package)))
+
+;;compilation settings
+(setq compile-command "python ~/scons-local/scons.py -j9 -U mode=release")
+(defun my-compile()
+  "Save buffers and start compile"
+  (interactive)
+  (save-some-buffers t)
+  (compile compile-command))
+(global-set-key [C-f5] 'compile)
+(global-set-key [f5] 'my-compile)
+(global-set-key [f7] 'revert-buffer)
+(setq compilation-scroll-output t)
+
+;;locale coding 
 (define-coding-system-alias 'UTF-8 'utf-8)
 (setq locale-coding-system'utf-8) 
 (prefer-coding-system'utf-8) 
@@ -57,20 +71,34 @@
 (setq column-number-mode t)
 (setq line-number-mode t)
 
+;;golang related
+;;dependencies: `go get -u golang.org/x/tools/cmd/goimports && go get -u github.com/nsf/gocode && go get github.com/rogpeppe/godef`
+(require 'company)
+(require 'company-go)
+(require 'go-eldoc)
+(require 'go-rename)
+(require 'golint)
+(defun go-mode-setup ()
+  (go-eldoc-setup)
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (set (make-local-variable 'company-backends) '(company-go))
+  (company-mode)
+  (setq compile-command "echo Building... && go build -v && echo Testing... && go test -v && echo Linter... && golint")
+  (setq compilation-read-command nil))
+(add-hook 'go-mode-hook 'go-mode-setup)
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+
 ;;c++ related
 (add-hook 'c++-mode-hook
       '(lambda ( )
          (c-toggle-hungry-state)))
-
 (setq auto-mode-alist
      (cons '("\\.h\\'" . c++-mode) auto-mode-alist))
-
 (add-to-list 'auto-mode-alist
 '("\\..pp\\'" . c++-mode))
-
 (add-to-list 'auto-mode-alist
 '("\\.ll\\'" . c++-mode))
-
 (add-to-list 'auto-mode-alist
 '("\\.yy\\'" . c++-mode))
 
@@ -103,18 +131,7 @@
 ;;transient-mark-mode
 (setq transient-mark-mode t);
 
-;;compilation settings
-(setq compile-command "python ~/scons-local/scons.py -j9 -U mode=release")
-(defun my-compile()
-  "Save buffers and start compile"
-  (interactive)
-  (save-some-buffers t)
-  (compile compile-command))
-(global-set-key [C-f5] 'compile)
-(global-set-key [f5] 'my-compile)
-(global-set-key [f7] 'revert-buffer)
-
-;; Enable EDE (Project Management) features
+;;Enable EDE (Project Management) features
 (global-ede-mode 1)
 
 (custom-set-faces
@@ -140,6 +157,10 @@
 )
 (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
 
+;;git related
+(setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+
+;;ivy related
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
@@ -170,6 +191,49 @@
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+;;markdown related
+;;ref: `https://github.com/seagle0128/.emacs.d/blob/master/lisp/init-markdown.el`
+;;dependencies: `brew install grip`
+(autoload 'markdown-mode "markdown-mode"
+             "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+(autoload 'gfm-mode "markdown-mode"
+             "Major mode for editing GitHub Flavored Markdown files" t)
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
+(defun markdown-to-html ()
+    (interactive)
+    (let ((program "grip")
+          (port "6419")
+          (buffer "*gfm-to-html*"))
+
+      ;; If process exists, kill it.
+      (markdown-preview-kill-grip buffer)
+
+      ;; Start a new grip process.
+      (start-process program buffer program (buffer-file-name) port)
+      (sleep-for 0.5) ; wait for process start
+      (browse-url (format "http://localhost:%s/%s"
+                          port
+                          (file-name-nondirectory (buffer-file-name))))))
+(global-set-key (kbd "C-c m")   'markdown-to-html)
+
+(defun markdown-preview-kill-grip (&optional buffer)
+    (interactive)
+    ;; kill existed grip process.
+    (let ((process (get-buffer-process (or buffer "*gfm-to-html*"))))
+      (when process
+        (kill-process process)
+        (message "Process %s killed" process))))
+
+(require 'protobuf-mode)
+(add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
+
+(require 'jinja2-mode)
+(add-to-list 'auto-mode-alist '("\\.jj2" . protobuf-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
