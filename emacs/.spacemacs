@@ -37,8 +37,11 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
-     ;; auto-completion
+     auto-completion
+     sematic
      ;; better-defaults
+     go
+     (c-c++ :variables =c-c++-backend= 'lsp-clangd) 
      emacs-lisp
      git
      markdown
@@ -48,6 +51,7 @@ values."
      ;;        shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
+     cscope
      ;; version-control
      )
    ;; List of additional packages that will be installed without being
@@ -259,7 +263,7 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -316,6 +320,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+ (xterm-mouse-mode -1)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -327,7 +332,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-plus-contrib smeargle markdown-mode gitignore-mode gitconfig-mode gitattributes-mode transient git-messenger git-link dumb-jump ws-butler winum which-key volatile-highlights uuidgen toc-org powerline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-bullets neotree move-text macrostep linum-relative indent-guide lv hungry-delete hl-todo highlight-parentheses parent-mode highlight-indentation pkg-info google-translate golden-ratio flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired f evil-search-highlight-persist evil-numbers evil-nerd-commenter dash goto-chg eval-sexp-fu elisp-slime-nav s diminish define-word bind-map bind-key packed aggressive-indent avy async json-mode jinja2-mode epl ctags-update counsel-etags auto-complete all-the-icons-ivy ace-jump-mode))))
+    (orgit magit-gitflow magit-popup helm-gitignore git-timemachine evil-magit magit vi-tilde-fringe use-package spaceline paradox spinner open-junk-file mmm-mode markdown-toc lorem-ipsum link-hint hydra highlight-numbers helm-themes helm-swoop helm-projectile projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag gh-md flx-ido evil-visualstar evil-visual-mark-mode evil-tutor evil-surround highlight evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil undo-tree column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile adaptive-wrap ace-window ace-link ace-jump-helm-line helm helm-core popup yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc helm-cscope xcscope helm-company helm-c-yasnippet go-guru go-eldoc fuzzy flycheck-pos-tip pos-tip flycheck disaster cython-mode company-statistics company-go go-mode company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet anaconda-mode pythonic ac-ispell org-plus-contrib smeargle markdown-mode gitignore-mode gitconfig-mode gitattributes-mode transient git-messenger git-link dumb-jump ws-butler winum which-key volatile-highlights uuidgen toc-org powerline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-bullets neotree move-text macrostep linum-relative indent-guide lv hungry-delete hl-todo highlight-parentheses parent-mode highlight-indentation pkg-info google-translate golden-ratio flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired f evil-search-highlight-persist evil-numbers evil-nerd-commenter dash goto-chg eval-sexp-fu elisp-slime-nav s diminish define-word bind-map bind-key packed aggressive-indent avy async json-mode jinja2-mode epl ctags-update counsel-etags auto-complete all-the-icons-ivy ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
