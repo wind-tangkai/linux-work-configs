@@ -49,7 +49,7 @@ values."
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
-     ;; spell-checking
+     spell-checking
      ;; syntax-checking
      cscope
      ;; version-control
@@ -87,7 +87,7 @@ values."
    ;; This variable has no effect if Emacs is launched with the parameter
    ;; `--insecure' which forces the value of this variable to nil.
    ;; (default t)
-   dotspacemacs-elpa-https nil 
+   dotspacemacs-elpa-https nil
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
@@ -105,7 +105,7 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'emacs
+   dotspacemacs-editing-style 'vim
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
    ;; Specify the startup banner. Default value is `official', it displays
@@ -311,6 +311,22 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (save-some-buffers t)
     (compile compile-command))
    (global-set-key [f5] 'my-compile)
+   (defun my-setup-indent (n)
+    ;; java/c/c++
+    (setq c-basic-offset n)
+    ;; web development
+    (setq coffee-tab-width n) ; coffeescript
+    (setq javascript-indent-level n) ; javascript-mode
+    (setq js-indent-level n) ; js-mode
+    (setq js2-basic-offset n) ; js2-mode, in latest js2-mode, it's alias of js-indent-level
+    (setq web-mode-markup-indent-offset n) ; web-mode, html tag in html file
+    (setq web-mode-css-indent-offset n) ; web-mode, css in html file
+    (setq web-mode-code-indent-offset n) ; web-mode, js code in html file
+    (setq css-indent-offset n) ; css-mode
+   )
+   (my-setup-indent 4)
+   (setq split-height-threshold 128)
+   (setq split-width-threshold 256)
   )
 
 (defun dotspacemacs/user-config ()
@@ -332,7 +348,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (orgit magit-gitflow magit-popup helm-gitignore git-timemachine evil-magit magit vi-tilde-fringe use-package spaceline paradox spinner open-junk-file mmm-mode markdown-toc lorem-ipsum link-hint hydra highlight-numbers helm-themes helm-swoop helm-projectile projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag gh-md flx-ido evil-visualstar evil-visual-mark-mode evil-tutor evil-surround highlight evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil undo-tree column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile adaptive-wrap ace-window ace-link ace-jump-helm-line helm helm-core popup yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc helm-cscope xcscope helm-company helm-c-yasnippet go-guru go-eldoc fuzzy flycheck-pos-tip pos-tip flycheck disaster cython-mode company-statistics company-go go-mode company-c-headers company-anaconda company cmake-mode clang-format auto-yasnippet yasnippet anaconda-mode pythonic ac-ispell org-plus-contrib smeargle markdown-mode gitignore-mode gitconfig-mode gitattributes-mode transient git-messenger git-link dumb-jump ws-butler winum which-key volatile-highlights uuidgen toc-org powerline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-bullets neotree move-text macrostep linum-relative indent-guide lv hungry-delete hl-todo highlight-parentheses parent-mode highlight-indentation pkg-info google-translate golden-ratio flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired f evil-search-highlight-persist evil-numbers evil-nerd-commenter dash goto-chg eval-sexp-fu elisp-slime-nav s diminish define-word bind-map bind-key packed aggressive-indent avy async json-mode jinja2-mode epl ctags-update counsel-etags auto-complete all-the-icons-ivy ace-jump-mode))))
+    (helm-cscope xcscope flyspell-correct-helm flyspell-correct auto-dictionary xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup helm-gitignore helm-company helm-c-yasnippet go-guru go-eldoc gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy evil-magit magit git-commit with-editor transient disaster company-statistics company-go go-mode company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
