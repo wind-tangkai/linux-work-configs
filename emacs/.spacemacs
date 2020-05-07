@@ -41,7 +41,10 @@ values."
      sematic
      ;; better-defaults
      go
-     (c-c++ :variables =c-c++-backend= 'lsp-clangd) 
+     (c-c++ :variables
+             c++-enable-organize-includes-on-save t
+             c-c++-default-mode-for-headers 'c++-mode)
+
      emacs-lisp
      git
      markdown
@@ -51,7 +54,7 @@ values."
      ;;        shell-default-position 'bottom)
      spell-checking
      ;; syntax-checking
-     cscope
+     ;; cscope
      ;; version-control
      )
    ;; List of additional packages that will be installed without being
@@ -311,20 +314,15 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (save-some-buffers t)
     (compile compile-command))
    (global-set-key [f5] 'my-compile)
-   (defun my-setup-indent (n)
-    ;; java/c/c++
-    (setq c-basic-offset n)
-    ;; web development
-    (setq coffee-tab-width n) ; coffeescript
-    (setq javascript-indent-level n) ; javascript-mode
-    (setq js-indent-level n) ; js-mode
-    (setq js2-basic-offset n) ; js2-mode, in latest js2-mode, it's alias of js-indent-level
-    (setq web-mode-markup-indent-offset n) ; web-mode, html tag in html file
-    (setq web-mode-css-indent-offset n) ; web-mode, css in html file
-    (setq web-mode-code-indent-offset n) ; web-mode, js code in html file
-    (setq css-indent-offset n) ; css-mode
-   )
-   (my-setup-indent 4)
+
+   (global-set-key [f7] 'revert-buffer)
+
+   (setq default-tab-width 4)
+   (setq-default indent-tabs-mode nil)
+   (setq c-default-style "ellemtel")
+   (setq c-basic-offset 4)
+   (setq tab-width 4)
+
    (setq split-height-threshold 128)
    (setq split-width-threshold 256)
   )
@@ -348,10 +346,14 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-cscope xcscope flyspell-correct-helm flyspell-correct auto-dictionary xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup helm-gitignore helm-company helm-c-yasnippet go-guru go-eldoc gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy evil-magit magit git-commit with-editor transient disaster company-statistics company-go go-mode company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (company-quickhelp pos-tip helm-cscope xcscope flyspell-correct-helm flyspell-correct auto-dictionary xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow magit-popup helm-gitignore helm-company helm-c-yasnippet go-guru go-eldoc gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy evil-magit magit git-commit with-editor transient disaster company-statistics company-go go-mode company-c-headers company cmake-mode clang-format auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-tooltip-common
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  )
