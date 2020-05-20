@@ -38,14 +38,11 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
-     auto-completion
-     sematic
-     ;; better-defaults
+	 auto-completion
      go
      (c-c++ :variables
              c++-enable-organize-includes-on-save t
              c-c++-default-mode-for-headers 'c++-mode)
-     
      emacs-lisp
      git
      markdown
@@ -326,8 +323,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
    (setq split-height-threshold 128)
    (setq split-width-threshold 256)
-   
-   ;;(global-company-mode t)
+
   )
 
 (defun dotspacemacs/user-config ()
@@ -337,7 +333,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
- (xterm-mouse-mode -1)
+   (fset 'evil-visual-update-x-selection 'ignore)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -355,5 +351,15 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ '(company-preview ((t (:background "gold3" :foreground "black"))))
+ '(company-preview-common ((t (:background "gold3" :foreground "grey20"))))
+ '(company-preview-search ((t (:background "green4" :foreground "green"))))
+ '(company-scrollbar-bg ((t (:background "#303030"))))
+ '(company-scrollbar-fg ((t (:background "#404040"))))
+ '(company-tooltip ((t (:background "#202020" :foreground "grey"))))
+ '(company-tooltip-annotation ((t (:foreground "gold"))))
+ '(company-tooltip-annotation-selection ((t (:foreground "white"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :foreground "white"))))
+ '(company-tooltip-common-selection ((t (:foreground "white"))))
+ '(company-tooltip-selection ((t (:background "red3" :foreground "white"))))
+)
