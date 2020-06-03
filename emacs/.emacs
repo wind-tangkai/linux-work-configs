@@ -10,32 +10,28 @@
 
 (setq default-tab-width 4)
 (setq-default indent-tabs-mode nil)
-(setq c-default-style "Linux")
-(setq c-basic-offset 4)
-(setq tab-width 4)
 (setq c-default-style "ellemtel" c-basic-offset 4)
 
 (global-set-key [C-f9] 'dired)
 
-(setq package-list '(ace-jump-mode all-the-icons all-the-icons-ivy auto-complete counsel counsel-etags ctags-update epl ivy jinja2-mode json-mode magit tldr markdown-mode protobuf-mode go-mode go-rename golint company-go go-eldoc))
+(setq split-height-threshold 128 
+      split-width-threshold 256)
+(defun my-split-window-sensibly (&optional window)
+    "replacement slit-window-sensibly' function which prefers vertical splits"
+    (interactive)
+    (let ((window (or window (selected-window))))
+        (or (and (window-splittable-p window t)
+                 (with-selected-window window
+                     (split-window-right)))
+            (and (window-splittable-p window)
+                 (with-selected-window window
+                     (split-window-below))))))
+(setq split-window-preferred-function 'my-split-window-sensibly)
 
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (add-to-list
-   'package-archives
-   ;; '("melpa" . "http://stable.melpa.org/packages/") ; many packages won't show if using stable
-   '("melpa" . "http://melpa.milkbox.net/packages/")
-   t)
-(package-initialize))
-
-;;fetch the list of packages available 
-(unless package-archive-contents
-    (package-refresh-contents))
-
-;;install the missing packages
-(dolist (package package-list)
-    (unless (package-installed-p package)
-          (package-install package)))
+;;packages
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
 
 ;;compilation settings
 (setq compile-command "python ~/scons-local/scons.py -j9 -U mode=release")
@@ -44,7 +40,6 @@
   (interactive)
   (save-some-buffers t)
   (compile compile-command))
-(global-set-key [C-f5] 'compile)
 (global-set-key [f5] 'my-compile)
 (global-set-key [f7] 'revert-buffer)
 (setq compilation-scroll-output t)
@@ -59,10 +54,11 @@
 (set-clipboard-coding-system 'ctext) 
 (set-buffer-file-coding-system 'utf-8) 
 
-(global-set-key  [C-left] 'windmove-left)
-(global-set-key  [C-right] 'windmove-right)
-(global-set-key  [C-up] 'windmove-up)
-(global-set-key  [C-down] 'windmove-down)
+;;moving between windows
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
 
 ;;show line number
 (require 'linum)
@@ -70,24 +66,6 @@
 (global-hl-line-mode 1)
 (setq column-number-mode t)
 (setq line-number-mode t)
-
-;;golang related
-;;dependencies: `go get -u golang.org/x/tools/cmd/goimports && go get -u github.com/nsf/gocode && go get github.com/rogpeppe/godef`
-(require 'company)
-(require 'company-go)
-(require 'go-eldoc)
-(require 'go-rename)
-(require 'golint)
-(defun go-mode-setup ()
-  (go-eldoc-setup)
-  (setq gofmt-command "goimports")
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (set (make-local-variable 'company-backends) '(company-go))
-  (company-mode)
-  (setq compile-command "echo Building... && go build -v && echo Testing... && go test -v && echo Linter... && golint")
-  (setq compilation-read-command nil))
-(add-hook 'go-mode-hook 'go-mode-setup)
-(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 
 ;;c++ related
 (add-hook 'c++-mode-hook
@@ -157,83 +135,25 @@
 )
 (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
 
-;;git related
+;;magit
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
-
-;;ivy related
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-h f") 'counsel-describe-function)
-(global-set-key (kbd "C-h v") 'counsel-describe-variable)
-(global-set-key (kbd "C-h l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+(global-set-key (kbd "C-c g") 'magit-status)
 
 (put 'set-goal-column 'disabled nil)
 
-(ac-config-default)
-
-(autoload
-  'ace-jump-mode
-  "ace-jump-mode" t)
-(eval-after-load "ace-jump-mode"
-  '(ace-jump-mode-enable-mark-sync))
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-
-;;markdown related
-;;ref: `https://github.com/seagle0128/.emacs.d/blob/master/lisp/init-markdown.el`
-;;dependencies: `brew install grip`
-(autoload 'markdown-mode "markdown-mode"
-             "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-(autoload 'gfm-mode "markdown-mode"
-             "Major mode for editing GitHub Flavored Markdown files" t)
-(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-
-(defun markdown-to-html ()
-    (interactive)
-    (let ((program "grip")
-          (port "6419")
-          (buffer "*gfm-to-html*"))
-
-      ;; If process exists, kill it.
-      (markdown-preview-kill-grip buffer)
-
-      ;; Start a new grip process.
-      (start-process program buffer program (buffer-file-name) port)
-      (sleep-for 0.5) ; wait for process start
-      (browse-url (format "http://localhost:%s/%s"
-                          port
-                          (file-name-nondirectory (buffer-file-name))))))
-(global-set-key (kbd "C-c m")   'markdown-to-html)
-
-(defun markdown-preview-kill-grip (&optional buffer)
-    (interactive)
-    ;; kill existed grip process.
-    (let ((process (get-buffer-process (or buffer "*gfm-to-html*"))))
-      (when process
-        (kill-process process)
-        (message "Process %s killed" process))))
+;;avy
+(global-set-key (kbd "C-c j") 'avy-goto-char)
+(global-set-key (kbd "C-c l") 'avy-goto-line)
+(global-set-key (kbd "C-c w") 'avy-goto-word-1)
 
 (require 'protobuf-mode)
 (add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
 
 (require 'jinja2-mode)
 (add-to-list 'auto-mode-alist '("\\.jj2" . protobuf-mode))
+
+;;comlete
+(add-hook 'after-init-hook 'global-company-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -242,4 +162,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (tldr auto-complete-c-headers ctags-update company ace-jump-mode all-the-icons epl ivy counsel-etags all-the-icons-ivy counsel magit json-mode yaml-mode markdown-mode markdown-mode+ jinja2-mode auto-complete go-autocomplete))))
+    (helm-company company-c-headers company auto-complete protobuf-mode magit json-mode jinja2-mode epl avy all-the-icons))))
