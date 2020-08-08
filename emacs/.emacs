@@ -30,7 +30,7 @@
 
 ;;packages
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (package-initialize)
 
 ;;compilation settings
@@ -59,6 +59,17 @@
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <up>")    'windmove-up)
 (global-set-key (kbd "C-c <down>")  'windmove-down)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;avy
+(global-set-key (kbd "C-c j") 'avy-goto-char)
+(global-set-key (kbd "C-c ;") 'avy-goto-char-2)
+(global-set-key (kbd "C-c w") 'avy-goto-word-1)
+(global-set-key (kbd "C-c l") 'avy-goto-line)
 
 ;;show line number
 (require 'linum)
@@ -130,10 +141,10 @@
 
 (setq backup-by-copying-when-linked t)
 
-(defun my-c-mode-cedet-hook ()
+(defun my-c-mode-hook ()
   (local-set-key "\C-xt" 'ff-find-other-file)
 )
-(add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
+(add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
 ;;magit
 (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
@@ -141,19 +152,11 @@
 
 (put 'set-goal-column 'disabled nil)
 
-;;avy
-(global-set-key (kbd "C-c j") 'avy-goto-char)
-(global-set-key (kbd "C-c l") 'avy-goto-line)
-(global-set-key (kbd "C-c w") 'avy-goto-word-1)
-
 (require 'protobuf-mode)
 (add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
 
 (require 'jinja2-mode)
 (add-to-list 'auto-mode-alist '("\\.jj2" . protobuf-mode))
-
-;;comlete
-(add-hook 'after-init-hook 'global-company-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -162,4 +165,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-company company-c-headers company auto-complete protobuf-mode magit json-mode jinja2-mode epl avy all-the-icons))))
+    (smex protobuf-mode magit json-mode jinja2-mode epl company-c-headers avy all-the-icons-ivy))))
