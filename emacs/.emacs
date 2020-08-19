@@ -56,13 +56,14 @@
 
 (require 'switch-window)
 (global-set-key (kbd "C-x o") 'switch-window)
+(setq switch-window-shortcut-appearance 'asciiart)
 
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 ;; enable this if you want wiper' to use it
 ;; (setq search-default-mode #'char-fold-to-regexp)
-(global-set-key "\C-s" 'swiper)
+;;(global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -119,12 +120,6 @@
 ;; default to unified diffs
 (setq diff-switches "-u")
 
-;;set colors
-(set-foreground-color "grey")
-(set-background-color "black")
-(set-cursor-color "grey")
-(set-mouse-color "gold1")
-
 ;;parentheses settings
 (show-paren-mode t)
 (setq show-paren-style 'parentheses)
@@ -135,21 +130,12 @@
 ;;Enable EDE (Project Management) features
 (global-ede-mode 1)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(my-long-line-face ((((class color)) (:background "red1"))) t)
- '(my-tab-face ((((class color)) (:background "grey10"))) t)
- '(my-trailing-space-face ((((class color)) (:background "gray10"))) t))
-
-(require 'ansi-color)
-(add-hook 'compilation-filter-hook
-          '(lambda ()
-             (let ((min (point-min-marker))
-                   (max (point-max-marker)))
-               (ansi-color-apply-on-region min max))))
+;;(require 'ansi-color)
+;;(add-hook 'compilation-filter-hook
+;;          '(lambda ()
+;;             (let ((min (point-min-marker))
+;;                   (max (point-max-marker)))
+;;               (ansi-color-apply-on-region min max))))
 
 (setq backup-by-copying-when-linked t)
 
@@ -177,4 +163,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel ivy switch-window helm smex protobuf-mode magit json-mode jinja2-mode epl company-c-headers avy all-the-icons-ivy))))
+    (counsel ivy switch-window protobuf-mode magit json-mode jinja2-mode epl company-c-headers avy all-the-icons-ivy))))
